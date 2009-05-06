@@ -50,7 +50,11 @@ module Spec
       
       protected
       def single_file
-        File.expand_path(ENV['TM_FILEPATH'])
+        file = File.expand_path(ENV['TM_FILEPATH'])
+        if regex = /(.*)\/app\/(controllers|models)\/(.*)(\.rb|\.erb)/.match(file)
+          file = "#{regex.captures[0]}/spec/#{regex.captures[1]}/#{regex.captures[2]}_spec.rb"
+        end
+        file
       end
 
       def last_remembered_single_file

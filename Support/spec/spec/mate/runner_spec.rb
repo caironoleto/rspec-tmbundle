@@ -5,6 +5,9 @@ share_as :RunnerSpecHelper do
     @first_failing_spec  = /fixtures\/example_failing_spec\.rb&line=3/n
     @second_failing_spec  = /fixtures\/example_failing_spec\.rb&line=7/n
     @fixtures_path = File.expand_path(File.dirname(__FILE__)) + '/../../../fixtures'
+    @rails_fixtues_path = File.expand_path(File.dirname(__FILE__)) + '/../../../../../example_rails_app'
+    @third_failing_spec = /spec\/models\/user_spec\.rb&line=5/n
+    @fourty_failing_spec = /spec\/controllers\/users_controller_spec\.rb&line=13/n
 
     set_env
     load File.expand_path("#{File.dirname(__FILE__)}/../../../lib/spec/mate.rb")
@@ -36,6 +39,27 @@ describe "Spec::Mate::Runner#run_file" do
     html.should =~ @first_failing_spec
     html.should =~ @second_failing_spec
   end
+
+  it "should run whole file spec when current file is a model" do
+    ENV['TM_FILEPATH'] = "#{@rails_fixtues_path}/app/models/user.rb"
+    
+    @spec_mate.run_file(@test_runner_io)
+    @test_runner_io.rewind
+    html = @test_runner_io.read
+    html.should =~ @third_failing_spec
+
+  end
+
+  it "should run whole file spec when current file is a controller" do
+    ENV['TM_FILEPATH'] = "#{@rails_fixtues_path}/app/controllers/users_controller.rb"
+    
+    @spec_mate.run_file(@test_runner_io)
+    @test_runner_io.rewind
+    html = @test_runner_io.read
+    html.should =~ @fourty_failing_spec
+
+  end
+  
 end
 
 describe "Spec::Mate::Runner#run_files" do

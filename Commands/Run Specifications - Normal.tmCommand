@@ -25,7 +25,7 @@ ${TM_RUBY:-ruby} /tmp/textmate-command-$$.rb; exit_status=$?; rm /tmp/textmate-c
 	<key>output</key>
 	<string>showAsHTML</string>
 	<key>scope</key>
-	<string>source.ruby.rspec</string>
+	<string>source.ruby.rspec, source.ruby, source.ruby.rails</string>
 	<key>uuid</key>
 	<string>B5906021-8E54-4863-A13B-EA46333DB5F1</string>
 </dict>
