@@ -3,14 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>content</key>
-	<string>${1:target}.should be_instance_of(${2:klass})</string>
+	<string>.should == ${1:value}</string>
 	<key>name</key>
-	<string>should be_instance_of</string>
+	<string>should ==</string>
 	<key>scope</key>
 	<string>source.ruby.rspec</string>
 	<key>tabTrigger</key>
-	<string>shbio</string>
+	<string>.sh=</string>
 	<key>uuid</key>
-	<string>8C5B6597-E115-4569-AE58-EF04042B21CD</string>
+	<string>35AEB176-B5A9-4168-AC6D-CC2434CA9F9E</string>
 </dict>
 </plist>

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>content</key>
-	<string>mock_model(${1:model})$0</string>
+	<string>mock_model(${1:model})</string>
 	<key>name</key>
 	<string>mock_model</string>
 	<key>scope</key>
