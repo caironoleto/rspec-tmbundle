@@ -1,15 +1,27 @@
-dir = File.dirname(__FILE__)
-$LOAD_PATH.unshift "#{dir}/../../../rspec/lib" 
-require 'spec'
+require 'rspec'
 require 'stringio'
 
-module Spec::Example::ExampleMethods
-  def set_env
-    root = File.expand_path(File.dirname(__FILE__) + '/../../../example_rails_app/vendor/plugins/rspec')
-    ENV['TM_SPEC'] = "ruby -I\"#{root}/lib\" \"#{root}/bin/spec\""
-    ENV['TM_RSPEC_HOME'] = "#{root}"
-    ENV['TM_PROJECT_DIRECTORY'] = File.expand_path(File.dirname(__FILE__))
-    ENV['TM_FILEPATH'] = nil
-    ENV['TM_LINE_NUMBER'] = nil
+def sandboxed(&block)
+  begin
+    @orig_config = RSpec.configuration
+    @orig_world  = RSpec.world
+    new_config = RSpec::Core::Configuration.new
+    new_world  = RSpec::Core::World.new(new_config)
+    RSpec.instance_variable_set(:@configuration, new_config)
+    RSpec.instance_variable_set(:@world, new_world)
+    object = Object.new
+    object.extend(RSpec::Core::ObjectExtensions)
+    object.extend(RSpec::Core::SharedExampleGroup)
+
+    object.instance_eval(&block)
+  ensure
+    RSpec.instance_variable_set(:@configuration, @orig_config)
+    RSpec.instance_variable_set(:@world, @orig_world)
+  end
+end
+
+RSpec.configure do |c|
+  c.around do |example|
+    sandboxed { example.run }
   end
 end
