@@ -1,8 +1,13 @@
 # This is based on Florian Weber's TDDMate
-require 'rubygems'
 
+ENV['TM_PROJECT_DIRECTORY'] ||= File.dirname(ENV['TM_FILEPATH'])
 rspec_rails_plugin = File.join(ENV['TM_PROJECT_DIRECTORY'],'vendor','plugins','rspec','lib')
-if File.directory?(rspec_rails_plugin)
+
+if File.exist?(File.join(ENV['TM_PROJECT_DIRECTORY'], 'Gemfile'))
+  require "rubygems"
+  require "bundler"
+  Bundler.setup
+elsif File.directory?(rspec_rails_plugin)
   $LOAD_PATH.unshift(rspec_rails_plugin)
 elsif ENV['TM_RSPEC_HOME']
   rspec_lib = File.join(ENV['TM_RSPEC_HOME'], 'lib')
@@ -11,7 +16,16 @@ elsif ENV['TM_RSPEC_HOME']
   end
   $LOAD_PATH.unshift(rspec_lib)
 end
-require 'spec/autorun'
+
+begin
+  require 'spec/autorun'
+rescue LoadError
+  require 'rspec/core'
+end
+
+def rspec2?
+  defined?(RSpec)
+end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/..')
 require 'spec/mate/runner'

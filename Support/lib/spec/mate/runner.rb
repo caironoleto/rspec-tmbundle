@@ -34,10 +34,15 @@ module Spec
         end
         argv += ENV['TM_RSPEC_OPTS'].split(" ") if ENV['TM_RSPEC_OPTS']
         Dir.chdir(project_directory) do
-          ::Spec::Runner::CommandLine.run(::Spec::Runner::OptionParser.parse(argv, STDERR, stdout))
+          if rspec2?
+            ::RSpec::Core::Runner.disable_autorun!
+            ::RSpec::Core::Runner.run(argv, STDERR, stdout)
+          else
+            ::Spec::Runner::CommandLine.run(::Spec::Runner::OptionParser.parse(argv, STDERR, stdout))
+          end
         end
       end
-      
+
       def save_as_last_remembered_file(file)
         File.open(last_remembered_file_cache, "w") do |f|
           f << file
@@ -48,7 +53,8 @@ module Spec
         "/tmp/textmate_rspec_last_remembered_file_cache.txt"
       end
       
-      protected
+    protected
+
       def single_file
         file = File.expand_path(ENV['TM_FILEPATH'])
         if regex = /(.*)\/app\/(controllers|models)\/(.*)(\.rb|\.erb)/.match(file)
@@ -63,7 +69,7 @@ module Spec
       end
       
       def project_directory
-        File.expand_path(ENV['TM_PROJECT_DIRECTORY'])
+        File.expand_path(ENV['TM_PROJECT_DIRECTORY']) rescue File.dirname(single_file)
       end
     end
   end
