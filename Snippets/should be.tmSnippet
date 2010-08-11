@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>.should be(${2:result})</string>
+	<key>name</key>
+	<string>should be</string>
+	<key>scope</key>
+	<string>source.ruby.rspec</string>
+	<key>tabTrigger</key>
+	<string>.shb</string>
+	<key>uuid</key>
+	<string>4B44D59D-50A8-489E-BF91-7DDA9CA93ED1</string>
+</dict>
+</plist>

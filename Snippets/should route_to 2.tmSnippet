@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>${1:target}.should route_to(:controller =&gt; ${2:controller})</string>
+	<key>name</key>
+	<string>should route_to</string>
+	<key>scope</key>
+	<string>source.ruby.rspec</string>
+	<key>tabTrigger</key>
+	<string>shrt</string>
+	<key>uuid</key>
+	<string>9A562DFA-679A-4CDA-8720-22DD9BCC4E6F</string>
+</dict>
+</plist>

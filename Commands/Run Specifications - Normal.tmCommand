@@ -17,7 +17,7 @@ ${TM_RUBY:-ruby} /tmp/textmate-command-$$.rb; exit_status=$?; rm /tmp/textmate-c
 	<key>fallbackInput</key>
 	<string>document</string>
 	<key>input</key>
-	<string>document</string>
+	<string>none</string>
 	<key>keyEquivalent</key>
 	<string>@r</string>
 	<key>name</key>
