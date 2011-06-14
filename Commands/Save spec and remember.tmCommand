@@ -5,18 +5,25 @@
 	<key>beforeRunningCommand</key>
 	<string>saveActiveFile</string>
 	<key>command</key>
-	<string>#!/usr/bin/env ruby
-require ENV['TM_BUNDLE_SUPPORT'] + "/lib/spec/mate"
+	<string>#!/usr/bin/env bash
 
+. "$TM_BUNDLE_SUPPORT/lib/rvm_textmate"
+
+cat &lt;&lt;'RUBYEOF' &gt; /tmp/textmate-command-$$.rb
+
+require ENV['TM_BUNDLE_SUPPORT'] + "/lib/rspec/mate"
 # Remembers the last _spec.rb file so that 'Run last spec' command 
 # can be activated from any Ruby source file
 
-Spec::Mate::Runner.new.save_as_last_remembered_file ENV['TM_FILEPATH']
+RSpec::Mate::Runner.new.save_as_last_remembered_file ENV['TM_FILEPATH']
+
+RUBYEOF
+
+${TM_RUBY:-ruby} /tmp/textmate-command-$$.rb; exit_status=$?; rm /tmp/textmate-command-$$.rb; exit $exit_status
+
 </string>
 	<key>input</key>
 	<string>none</string>
-	<key>keyEquivalent</key>
-	<string>@s</string>
 	<key>name</key>
 	<string>Save Example file and remember</string>
 	<key>output</key>

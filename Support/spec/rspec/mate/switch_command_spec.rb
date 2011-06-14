@@ -1,21 +1,8 @@
-require File.dirname(__FILE__) + '/../../../lib/spec/mate/switch_command'
+require 'spec_helper'
 
-module Spec
+module RSpec
   module Mate
     describe SwitchCommand do
-      def twin(expected, opts={:webapp => false})
-        File.stub!(:exist?).and_return(opts[:webapp])
-
-        simple_matcher do |actual, matcher|
-          matcher.failure_message = "expected #{actual.inspect} to twin #{expected.inspect}, but it didn't"
-          matcher.negative_failure_message = "expected #{actual.inspect} not to twin #{expected.inspect}, but it did"
-          matcher.description = "treat #{expected.inspect} and #{actual.inspect} as twins"
-
-          command = SwitchCommand.new
-          command.twin(actual) == expected && command.twin(expected) == actual
-        end
-      end
-
       class << self
         def expect_twins(pair)
           specify do
@@ -23,19 +10,28 @@ module Spec
           end
         end
       end
+      
+      RSpec::Matchers.define :twin do |*args|
+        expected = args.shift
+        opts = args.last || {:webapp => false}
+        File.stub!(:exist?).and_return(opts[:webapp])
 
-      def be_a(expected)
-        simple_matcher do |actual, matcher|
-          matcher.failure_message = "expected #{actual.inspect} to be_a #{expected.inspect}, but it didn't"
-          matcher.negative_failure_message = "expected #{actual.inspect} not to be_a #{expected.inspect}, but it did"
+        match do |actual|
+          command = SwitchCommand.new
+          command.twin(actual) == expected && command.twin(expected) == actual
+        end
+      end
+
+      RSpec::Matchers.define :be_a do |expected|
+        match do |actual|
           SwitchCommand.new.file_type(actual) == expected
         end
       end
-    
+
       describe "in a regular app" do
         expect_twins [
-          "/Users/aslakhellesoy/scm/rspec/trunk/RSpec.tmbundle/Support/spec/spec/mate/switch_command_spec.rb",
-          "/Users/aslakhellesoy/scm/rspec/trunk/RSpec.tmbundle/Support/lib/spec/mate/switch_command.rb"
+          "/Users/aslakhellesoy/scm/rspec/trunk/RSpec.tmbundle/Support/spec/rspec/mate/switch_command_spec.rb",
+          "/Users/aslakhellesoy/scm/rspec/trunk/RSpec.tmbundle/Support/lib/rspec/mate/switch_command.rb"
         ]
       
         it "should suggest plain spec" do
@@ -48,7 +44,7 @@ module Spec
       
         it "should create spec for spec files" do
           regular_spec = <<-SPEC
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe ${1:Type} do
   $0
@@ -81,13 +77,13 @@ EOF
         ]
       
         expect_twins [
-          "/a/full/path/app/controllers/application.rb",
+          "/a/full/path/app/controllers/application_controller.rb",
           "/a/full/path/spec/controllers/application_controller_spec.rb"
         ]
       
         expect_twins [
           "/a/full/path/spec/controllers/application_controller_spec.rb",
-          "/a/full/path/app/controllers/application.rb"
+          "/a/full/path/app/controllers/application_controller.rb"
         ]
       
         expect_twins [
@@ -196,7 +192,32 @@ EOF
 
         it "should create spec that requires a helper" do
           SwitchCommand.new.content_for('controller spec', "spec/controllers/mooky_controller_spec.rb").split("\n")[0].should == 
-            "require File.dirname(__FILE__) + '/../spec_helper'"
+            "require 'spec_helper'"
+        end
+        
+        it "creates a controller if twinned from a controller spec" do
+          SwitchCommand.new.content_for('controller', "spec/controllers/mooky_controller.rb").should == <<-EXPECTED
+class MookyController < ApplicationController
+end
+EXPECTED
+        end
+        
+        it "creates a model if twinned from a model spec" do
+          SwitchCommand.new.content_for('model', "spec/models/mooky.rb").should == <<-EXPECTED
+class Mooky < ActiveRecord::Base
+end
+EXPECTED
+        end
+        
+        it "creates a helper if twinned from a helper spec" do
+          SwitchCommand.new.content_for('helper', "spec/helpers/mooky_helper.rb").should == <<-EXPECTED
+module MookyHelper
+end
+EXPECTED
+        end
+        
+        it "creates an empty view if twinned from a view spec" do
+          SwitchCommand.new.content_for('view', "spec/views/mookies/index.html.erb_spec.rb").should == ""
         end
       end
     end

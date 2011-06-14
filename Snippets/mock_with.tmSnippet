@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>content</key>
-	<string>Spec::Runner.configure do |config|
+	<string>RSpec::Runner.configure do |config|
 	config.mock_with :${0:mocha|flexmock|rr}
 end</string>
 	<key>name</key>
