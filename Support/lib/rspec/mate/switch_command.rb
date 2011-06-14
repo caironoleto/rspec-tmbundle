@@ -1,4 +1,4 @@
-module Spec
+module RSpec
   module Mate
     # This is based on Ruy Asan's initial code:
     # http://ruy.ca/posts/6-A-simple-switch-between-source-and-spec-file-command-for-textmate-with-auto-creation-
@@ -37,7 +37,6 @@ module Spec
               if framework.rails? || framework.merb?
                 path = path.gsub(/\/app\//, "/spec/")
                 path = path.gsub(/\/lib\//, "/spec/lib/")
-                path = path.gsub(/application\.rb/, 'application_controller.rb')
               else
                 path = path.gsub(/\/lib\//, "/spec/")
               end
@@ -55,7 +54,6 @@ module Spec
               if framework.rails? || framework.merb?
                 path = path.gsub(/\/spec\/lib\//, "/lib/")
                 path = path.gsub(/\/spec\//, "/app/")
-                path = path.gsub(/application_controller\.rb/, 'application.rb')
               else
                 path = path.gsub(/\/spec\//, "/lib/")
               end
@@ -86,8 +84,34 @@ module Spec
         case file_type
           when /spec$/ then
             spec(relative_path)
+          when "controller"
+            <<-CONTROLLER
+class #{class_from_path(relative_path)} < ApplicationController
+end
+CONTROLLER
+          when "model"
+            <<-MODEL
+class #{class_from_path(relative_path)} < ActiveRecord::Base
+end
+MODEL
+          when "helper"
+            <<-HELPER
+module #{class_from_path(relative_path)}
+end
+HELPER
+          when "view"
+            ""
           else
             klass(relative_path)
+        end
+      end
+      
+      def class_from_path(path)
+        underscored = path.split('/').last.split('.rb').first
+        parts = underscored.split('_')
+        parts.inject("") do |word, part|
+          word << part.capitalize
+          word
         end
       end
       
@@ -99,19 +123,16 @@ module Spec
       end
       
       def spec(path)
-        depth = "/.." * (path.split('/').length - 2)
-        header = "require File.dirname(__FILE__) + '#{depth}/spec_helper'"
-        snippet_name = "Describe_type.tmSnippet"
         content = <<-SPEC
-#{header}
+require 'spec_helper'
 
-#{snippet(snippet_name)}
+#{snippet("Describe_type.tmSnippet")}
 SPEC
       end
 
-      def klass(relative_path)
+      def klass(relative_path, content=nil)
         parts = relative_path.split('/')
-        lib_index = parts.index('lib')
+        lib_index = parts.index('lib') || 0
         parts = parts[lib_index+1..-1]
         lines = Array.new(parts.length*2)
         parts.each_with_index do |part, n|
@@ -132,8 +153,8 @@ SPEC
       def write_and_open(path, content)
         `mkdir -p "#{File.dirname(path)}"`
         `touch "#{path}"`
-        `osascript &>/dev/null -e 'tell app "SystemUIServer" to activate' -e 'tell app "TextMate" to activate'`
         `"$TM_SUPPORT_PATH/bin/mate" "#{path}"`
+        `osascript &>/dev/null -e 'tell app "SystemUIServer" to activate' -e 'tell app "TextMate" to activate'`
         escaped_content = content.gsub("\n","\\n").gsub('$','\\$').gsub('"','\\\\\\\\\\\\"')
         `osascript &>/dev/null -e "tell app \\"TextMate\\" to insert \\"#{escaped_content}\\" as snippet true"`      
       end
