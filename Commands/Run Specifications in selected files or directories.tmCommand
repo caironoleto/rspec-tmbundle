@@ -11,8 +11,8 @@
 
 cat &lt;&lt;'RUBYEOF' &gt; /tmp/textmate-command-$$.rb
 
-require ENV['TM_BUNDLE_SUPPORT'] + "/lib/spec/mate"
-Spec::Mate::Runner.new.run_files STDOUT
+require ENV['TM_BUNDLE_SUPPORT'] + "/lib/rspec/mate"
+RSpec::Mate::Runner.new.run_files STDOUT
 
 RUBYEOF
 

@@ -3,19 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>content</key>
-	<string>RSpec::Matchers.define :${1:name} do |${2:expected}|
-  match do |${3:actual}|
-    $3.$1?($2)
-  end
-end
-</string>
+	<string>.should match(/${2:regexp}/)</string>
 	<key>name</key>
-	<string>Matcher (DSL)</string>
+	<string>should match</string>
 	<key>scope</key>
 	<string>source.ruby.rspec</string>
 	<key>tabTrigger</key>
-	<string>mat</string>
+	<string>.shm</string>
 	<key>uuid</key>
-	<string>15CE9873-2B79-44C5-8B20-2DA3BBF97E9E</string>
+	<string>1D6118F4-3457-400D-89DB-0AD9312AF625</string>
 </dict>
 </plist>

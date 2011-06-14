@@ -1,4 +1,4 @@
-module Spec
+module RSpec
   module Mate
     # This is based on Ruy Asan's initial code:
     # http://ruy.ca/posts/6-A-simple-switch-between-source-and-spec-file-command-for-textmate-with-auto-creation-

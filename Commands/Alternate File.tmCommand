@@ -11,8 +11,8 @@
 
 cat &lt;&lt;'RUBYEOF' &gt; /tmp/textmate-command-$$.rb
 
-require ENV['TM_BUNDLE_SUPPORT'] + "/lib/spec/mate/switch_command"
-Spec::Mate::SwitchCommand.new.go_to_twin(ENV['TM_PROJECT_DIRECTORY'], ENV['TM_FILEPATH'])
+require ENV['TM_BUNDLE_SUPPORT'] + "/lib/rspec/mate/switch_command"
+RSpec::Mate::SwitchCommand.new.go_to_twin(ENV['TM_PROJECT_DIRECTORY'], ENV['TM_FILEPATH'])
 
 RUBYEOF
 

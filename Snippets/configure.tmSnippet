@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>content</key>
-	<string>Spec::Runner.configure do |config|
+	<string>RSpec.configure do |config|
   config.$0
 end</string>
 	<key>name</key>

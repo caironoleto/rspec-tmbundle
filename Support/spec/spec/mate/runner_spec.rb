@@ -1,16 +1,7 @@
-require File.dirname(__FILE__) + '/../../../lib/spec/mate/runner'
+require File.dirname(__FILE__) + '/../../spec_helper'
 
 share_as :RunnerSpecHelper do
-  def set_env
-    root = File.expand_path(File.dirname(__FILE__) + '../../../../../../rspec-core')
-    ENV['TM_RSPEC_HOME'] = "#{root}"
-    ENV['TM_PROJECT_DIRECTORY'] = File.expand_path(File.dirname(__FILE__))
-    ENV['TM_FILEPATH'] = nil
-    ENV['TM_LINE_NUMBER'] = nil
-  end
-
   before(:each) do
-    debugger
     @first_failing_spec  = /fixtures\/example_failing_spec\.rb&line=3/n
     @second_failing_spec  = /fixtures\/example_failing_spec\.rb&line=7/n
     @fixtures_path = File.expand_path(File.dirname(__FILE__)) + '/../../../fixtures'
@@ -19,7 +10,6 @@ share_as :RunnerSpecHelper do
     @fourty_failing_spec = /spec\/controllers\/users_controller_spec\.rb&line=13/n
 
     set_env
-
     load File.expand_path("#{File.dirname(__FILE__)}/../../../lib/spec/mate.rb")
     @spec_mate = Spec::Mate::Runner.new
 
@@ -31,9 +21,9 @@ share_as :RunnerSpecHelper do
     $".delete_if do |path|
       path =~ /example_failing_spec\.rb/
     end
-    # Spec::Runner.options.example_groups.delete_if do |example_group|
-      # example_group.description == "An example failing spec"
-    # end
+    Spec::Runner.options.example_groups.delete_if do |example_group|
+      example_group.description == "An example failing spec"
+    end
   end
 end
 
